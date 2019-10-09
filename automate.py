@@ -1,5 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.support.ui import Select
 from config import *
 from time import sleep
 
@@ -14,6 +15,19 @@ def login(browser):
         browser.find_element_by_id('password').send_keys(password)
         browser.find_element_by_id('pop_login').click()
         print('Successfully logged in')
+
+def filter_mac(browser):
+    browser.get(f'{address}html/wlanmacfilter.html')
+    select = Select(browser.find_element_by_id('ssid_select_service'))
+    select.select_by_value('1')
+    for idx, val in enumerate(allowed_mac):
+        element_id = f'ssid_input_WifiMacFilterMac{idx}'
+        browser.find_element_by_id(element_id).send_keys(val)
+    browser.find_element_by_id('apply').click()
+    sleep(3)
+    browser.find_element_by_id('pop_confirm').click()
+    sleep(3)
+
 
 def reboot(browser):
     browser.get(f'{address}html/reboot.html')
