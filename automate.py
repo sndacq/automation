@@ -23,18 +23,22 @@ def login(browser):
         print('Successfully logged in')
 
 def filter_mac(browser, disable=False):
-    # TODO: Validate filter before resetting
     browser.get(f'{address}html/wlanmacfilter.html')
+    WebDriverWait(browser, 3).until(
+            ec.presence_of_element_located((By.ID, 'ssid_select_service')))
     select = Select(browser.find_element_by_id('ssid_select_service'))
     if disable:
         select.select_by_value('0')
+        print('Removing filter')
     else:
         select.select_by_value('1')
         for idx, val in enumerate(allowed_mac):
+            print(f'Added {val} to filter')
             element_id = f'ssid_input_WifiMacFilterMac{idx}'
             browser.find_element_by_id(element_id).send_keys(val)
     wait_then_click(browser, 'apply')
     wait_then_click(browser, 'pop_confirm')
+    print('Applied changes')
 
 def reboot(browser):
     browser.get(f'{address}html/reboot.html')
